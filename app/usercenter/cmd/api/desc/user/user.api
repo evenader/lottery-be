@@ -1,0 +1,80 @@
+syntax = "v1"
+
+info (
+	title:  "用户信息"
+	desc:   "用户信息"
+	author: "evenader"
+)
+
+// 内存对齐
+type User {
+	// 1. String 类型（16 字节，内部含指针，优先聚合在一起）
+	Mobile    string `json:"mobile"`
+	Nickname  string `json:"nickname"`
+	Avatar    string `json:"avatar"`
+	Info      string `json:"info"`
+	Signature string `json:"signature"`
+	// 2. 8 字节数值类型（浮点数与 ID 等核心字段）
+	Longitude float64 `json:"longitude"`
+	Latitude  float64 `json:"latitude"`
+	Id        int64   `json:"id"`
+	// 3. 业务状态与计数器（同为 8 字节）
+	Sex                int64 `json:"sex"`
+	IsAdmin            int64 `json:"isAdmin"`
+	ParticipationCount int64 `json:"participation_count"`
+	CreatedCount       int64 `json:"created_count"`
+	WonCount           int64 `json:"won_count"`
+	Integral           int64 `json:"integral"`
+}
+
+type (
+	RegisterReq {
+		Mobile   string `json:"mobile"`
+		Password string `json:"password"`
+	}
+	RegisterResp {
+		AccessToken  string `json:"accessToken"`
+		AccessExpire int64  `json:"accessExpire"`
+		RefreshAfter int64  `json:"refreshAfter"`
+	}
+	LoginReq {
+		Mobile   string `json:"mobile"`
+		Password string `json:"password"`
+	}
+	LoginResp {
+		AccessToken  string `json:"accessToken"`
+		AccessExpire int64  `json:"accessExpire"`
+		RefreshAfter int64  `json:"refreshAfter"`
+	}
+	UserInfoReq  {}
+	UserInfoResp {
+		User User `json:"user"`
+	}
+	UserUpdateReq {
+		Nickname  string  `json:"nickname"`
+		Avatar    string  `json:"avatar"`
+		Info      string  `json:"info"`
+		Signature string  `json:"signature"`
+		Longitude float64 `json:"longitude"`
+		Latitude  float64 `json:"latitude"`
+		Sex       int64
+	}
+	UserUpdateResp  {}
+	SetAdminReq {
+		Id int64 `json:"id"`
+	}
+	SetAdminResp  {}
+	WXMiniAuthReq {
+		Code          string `json:"code"`
+		IV            string `json:"iv"`
+		EncryptedData string `json:"encryptedData"`
+		Nickname      string `json:"nickname, optional"`
+		Avatar        string `json:"avatar, optional"`
+	}
+	WXMiniAuthResp {
+		AccessToken  string `json:"accessToken"`
+		AccessExpire int64  `json:"accessExpire"`
+		RefreshAfter int64  `json:"refreshAfter"`
+	}
+)
+

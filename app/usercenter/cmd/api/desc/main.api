@@ -1,0 +1,54 @@
+syntax = "v1"
+
+info (
+	title:  "用户中心服务"
+	desc:   "用户中心服务"
+	author: "evenader"
+)
+
+import (
+	"user/user.api"
+)
+
+//============================> usercenter v1 <============================
+// 无需登录
+@server (
+	prefix:  usercenter/v1
+	group:   user
+	summary: "用户管理"
+)
+service usercenter {
+	@doc "注册"
+	@handler register
+	post /user/register (RegisterReq) returns (RegisterResp)
+
+	@doc "登录"
+	@handler login
+	post /user/login (LoginReq) returns (LoginResp)
+
+	@doc "小程序注册登录"
+	@handler wxMiniAuth
+	post /user/wxMiniAuth (WXMiniAuthReq) returns (WXMiniAuthResp)
+}
+
+// 需要登录
+@server (
+	prefix:  usercenter/v1
+	group:   user
+	summary: "用户管理"
+	jwt:     JwtAuth
+)
+service usercenter {
+	@doc "获取用户数据"
+	@handler detail
+	post /user/detail (UserInfoReq) returns (UserInfoResp)
+
+	@doc "修改用户基本信息"
+	@handler update
+	put /user/update (UserUpdateReq) returns (UserUpdateResp)
+
+	@doc "设置user为admin"
+	@handler setAdmin
+	post /user/setAdmin (SetAdminReq) returns (SetAdminResp)
+}
+

@@ -14,19 +14,21 @@ import (
 )
 
 type (
-	AddUserReq      = pb.AddUserReq
-	AddUserResp     = pb.AddUserResp
-	DelUserReq      = pb.DelUserReq
-	DelUserResp     = pb.DelUserResp
-	GetUserInfoReq  = pb.GetUserInfoReq
-	GetUserInfoResp = pb.GetUserInfoResp
-	LoginReq        = pb.LoginReq
-	LoginResp       = pb.LoginResp
-	RegisterReq     = pb.RegisterReq
-	RegisterResp    = pb.RegisterResp
-	UpdateUserReq   = pb.UpdateUserReq
-	UpdateUserResp  = pb.UpdateUserResp
-	User            = pb.User
+	AddUserReq        = pb.AddUserReq
+	AddUserResp       = pb.AddUserResp
+	DelUserReq        = pb.DelUserReq
+	DelUserResp       = pb.DelUserResp
+	GenerateTokenReq  = pb.GenerateTokenReq
+	GenerateTokenResp = pb.GenerateTokenResp
+	GetUserInfoReq    = pb.GetUserInfoReq
+	GetUserInfoResp   = pb.GetUserInfoResp
+	LoginReq          = pb.LoginReq
+	LoginResp         = pb.LoginResp
+	RegisterReq       = pb.RegisterReq
+	RegisterResp      = pb.RegisterResp
+	UpdateUserReq     = pb.UpdateUserReq
+	UpdateUserResp    = pb.UpdateUserResp
+	User              = pb.User
 
 	Usercenter interface {
 		// 自定义的服务

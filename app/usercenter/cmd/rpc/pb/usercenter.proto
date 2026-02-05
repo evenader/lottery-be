@@ -105,6 +105,14 @@ message DelUserReq {
 message DelUserResp {
 }
 
+message GenerateTokenReq {
+  int64 id = 1; //id
+}
+message GenerateTokenResp {
+  string accessToken = 1;
+  int64  accessExpire = 2;
+  int64  refreshAfter = 3;
+}
 
 
 // ------------------------------------

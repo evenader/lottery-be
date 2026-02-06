@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  # usercenter 容器，同时运行 API 和 RPC
+  usercenter:
+    image: golang:1.23-alpine
+    container_name: usercenter-dev
+    environment:
+      TZ: Asia/Shanghai
+      GOPROXY: https://goproxy.cn,direct
+    working_dir: /go/looklook
+    # 核心：安装并运行 modd，它会根据你根目录下的 modd.conf 启动服务
+#    command: sh -c "apk add --no-cache git && go install github.com/cortesi/modd/cmd/modd@latest && /go/bin/modd"
+    # 在 docker-compose.yml 中修改这一行
+    command: sh -c "apk add --no-cache git && go install github.com/cortesi/modd/cmd/modd@latest && /go/bin/modd --file /go/looklook/modd.conf"
+    volumes:
+      - .:/go/looklook
+    privileged: true
+    restart: always
+    networks:
+      - looklook_net
+    ports:
+      - 2004:2004  # RPC 端口
+      - 8888:8888  # API 端口（根据你 api 的 yaml 配置修改）
+
+networks:
+  looklook_net:
+    external: true # 注意：这里假设你已经启动了 docker-compose-env.yml 中的网络
+    name: lottery-be_looklook_net

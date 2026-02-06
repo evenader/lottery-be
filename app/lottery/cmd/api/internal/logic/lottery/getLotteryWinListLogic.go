@@ -1,0 +1,34 @@
+// Code scaffolded by goctl. Safe to edit.
+// goctl 1.9.2
+
+package lottery
+
+import (
+	"context"
+
+	"lottery-be/app/lottery/cmd/api/internal/svc"
+	"lottery-be/app/lottery/cmd/api/internal/types"
+
+	"github.com/zeromicro/go-zero/core/logx"
+)
+
+type GetLotteryWinListLogic struct {
+	logx.Logger
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
+}
+
+// 获取当前用户中奖列表
+func NewGetLotteryWinListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetLotteryWinListLogic {
+	return &GetLotteryWinListLogic{
+		Logger: logx.WithContext(ctx),
+		ctx:    ctx,
+		svcCtx: svcCtx,
+	}
+}
+
+func (l *GetLotteryWinListLogic) GetLotteryWinList(req *types.GetLotteryWinListReq) (resp *types.GetLotteryWinListResp, err error) {
+	// todo: add your logic here and delete this line
+
+	return
+}

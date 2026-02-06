@@ -30,6 +30,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 	}
 }
 
+// 顺带说一句 这算什么商业级项目 里面连个电话校验都没有
 func (l *RegisterLogic) Register(req *types.RegisterReq) (*types.RegisterResp, error) {
 	// todo: add your logic here and delete this line
 	registerResp, err := l.svcCtx.UsercenterRpc.Register(l.ctx, &usercenter.RegisterReq{
@@ -42,7 +43,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (*types.RegisterResp, e
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	var resp types.RegisterResp
-	_ = copier.Copy(resp, registerResp)
+	_ = copier.Copy(&resp, registerResp)
 
 	return &resp, nil
 }

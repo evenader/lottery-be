@@ -1,1 +1,29 @@
+# idea
+.idea
 .idea/
+*.iml
+.DS_Store
+**/.DS_Store
+
+#deploy data
+
+data/*
+!data/.gitkeep
+test/
+deploy/script/mysql/genModel
+
+# gitlab ci
+.cache
+
+#vscode
+.vscode
+.vscode/
+
+
+default.etcd
+
+
+docker-compose-changlin.yml
+
+#package powerwechat log
+wechat

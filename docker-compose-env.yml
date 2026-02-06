@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  # 1. 数据库：你的 usercenter 赖以生存的基础
+  mysql:
+    image: mysql/mysql-server:8.0.28
+    platform: linux/amd64
+    container_name: mysql
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: PXDN93VRKUm8TeE7
+    ports:
+      - 33069:3306 # 注意：宿主机访问端口是 33069
+    volumes:
+      - ./data/mysql/data:/var/lib/mysql
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+    privileged: true
+    restart: always
+    networks:
+      - looklook_net
+
+  # 2. 缓存：go-zero 生成代码默认依赖 Redis
+  redis:
+    image: redis:6.2.5
+    container_name: redis
+    ports:
+      - 36379:6379 # 注意：宿主机访问端口是 36379
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./data/redis/data:/data:rw
+    command: "redis-server --requirepass G62m50oigInC30sf --appendonly yes"
+    privileged: true
+    restart: always
+    networks:
+      - looklook_net
+
+networks:
+  looklook_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

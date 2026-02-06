@@ -1,1 +1,0 @@
-Insert(ctx context.Context, data *{{.upperStartCamelObject}},opts ...Option) (sql.Result,error)

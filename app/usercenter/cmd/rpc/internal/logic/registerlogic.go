@@ -52,6 +52,7 @@ func (l *RegisterLogic) Register(in *pb.RegisterReq) (*pb.RegisterResp, error) {
 	}
 
 	//trans是重资源，非必要计算放在外面
+	var userId int64
 	if err := l.svcCtx.UserModel.Trans(l.ctx, func(ctx context.Context, session sqlx.Session) error {
 		user := &model.User{
 			Mobile:   in.Mobile,
@@ -68,7 +69,7 @@ func (l *RegisterLogic) Register(in *pb.RegisterReq) (*pb.RegisterResp, error) {
 		if err != nil {
 			return errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "Register db user insertResult.LastInsertId err:%v,user:%+v", err, user)
 		}
-
+		userId = lastId
 		userAuth := &model.UserAuth{
 			UserId:   lastId,
 			AuthKey:  in.AuthKey,
@@ -81,15 +82,16 @@ func (l *RegisterLogic) Register(in *pb.RegisterReq) (*pb.RegisterResp, error) {
 	}); err != nil {
 		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_ERROR), "db trans exec fail err:%v", err)
 	}
-
+	l.Logger.Info("-----> DEBUG: Current userId to generate token: %d \n", userId)
 	tokenLogic := NewGenerateTokenLogic(l.ctx, l.svcCtx)
 	tokenRsp, err := tokenLogic.GenerateToken(&pb.GenerateTokenReq{
-		Id: user.Id,
+		Id: userId,
 	})
 	if err != nil {
-		return nil, errors.Wrapf(ErrGenerateTokenError, "GenerateToken userId : %d", user.Id)
+		return nil, errors.Wrapf(ErrGenerateTokenError, "GenerateToken userId : %d", userId)
 	}
-
+	// 🌟 核心问题：在这里打印一下，看 tokenRsp 到底有没有值
+	l.Logger.Info("-----> TOKEN DEBUG: %s ", tokenRsp.AccessToken)
 	return &pb.RegisterResp{
 		AccessToken:  tokenRsp.AccessToken,
 		AccessExpire: tokenRsp.AccessExpire,

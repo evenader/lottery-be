@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/hibiken/asynq"
 	"github.com/zeromicro/go-zero/core/logx"
-	"looklook/app/mqueue/cmd/job/jobtype"
+	"lottery-be/app/mqueue/cmd/job/jobtype"
 )
 
 func (l *MqueueScheduler) WishCheckinScheduler() {

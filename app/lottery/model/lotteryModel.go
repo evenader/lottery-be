@@ -4,8 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"lottery-be/common/xerr"
+	"time"
 )
 
 var _ LotteryModel = (*customLotteryModel)(nil)
@@ -16,6 +19,7 @@ type (
 	LotteryModel interface {
 		lotteryModel
 		UpdateClockTaskIdOnLottery(ctx context.Context, id int64, clockTaskId int64, opts ...Option) error
+		SearchTimeOutIds(ctx context.Context, currentTime time.Time, announceType int64) ([]int64, error)
 	}
 
 	customLotteryModel struct {
@@ -59,4 +63,14 @@ func (m *defaultLotteryModel) UpdateClockTaskIdOnLottery(ctx context.Context, id
 	}, lotteryLotteryIdKey)
 
 	return err
+}
+
+func (c *defaultLotteryModel) SearchTimeOutIds(ctx context.Context, currentTime time.Time, announceType int64) ([]int64, error) {
+	var resp []int64
+	query := fmt.Sprintf("SELECT id FROM %s WHERE announce_type = 1 AND is_announced = 0 AND del_state = 0 AND announce_time <= ?", c.table)
+	err := c.QueryRowsNoCacheCtx(ctx, &resp, query, announceType, currentTime)
+	if err != nil {
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.GETLOTTERY_BYLESSTHAN_CURRENTTIME_ERROR), "GetLotterysByLessThanCurrentTime, CurrentTime:%v, anounceType:%v, error: %v", currentTime, announceType, err)
+	}
+	return resp, nil
 }

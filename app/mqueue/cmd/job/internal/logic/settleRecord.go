@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/hibiken/asynq"
-	"looklook/app/mqueue/cmd/job/internal/svc"
+	"lottery-be/app/mqueue/cmd/job/internal/svc"
 )
 
 // SettleRecordHandler   shcedule billing to home business

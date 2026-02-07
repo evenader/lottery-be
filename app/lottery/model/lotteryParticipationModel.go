@@ -1,8 +1,12 @@
 package model
 
 import (
+	"context"
+	"fmt"
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"lottery-be/common/xerr"
 )
 
 var _ LotteryParticipationModel = (*customLotteryParticipationModel)(nil)
@@ -12,6 +16,7 @@ type (
 	// and implement the added methods in customLotteryParticipationModel.
 	LotteryParticipationModel interface {
 		lotteryParticipationModel
+		GetParticipationUserIdsByLotteryId(ctx context.Context, LotteryId int64) ([]int64, error)
 	}
 
 	customLotteryParticipationModel struct {
@@ -24,4 +29,14 @@ func NewLotteryParticipationModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...
 	return &customLotteryParticipationModel{
 		defaultLotteryParticipationModel: newLotteryParticipationModel(conn, c, opts...),
 	}
+}
+
+func (m *defaultLotteryParticipationModel) GetParticipationUserIdsByLotteryId(ctx context.Context, LotteryId int64) ([]int64, error) {
+	query := fmt.Sprintf("SELECT user_id FROM %s WHERE lottery_id = ?", m.table)
+	var resp []int64
+	err := m.QueryRowsNoCacheCtx(ctx, &resp, query, LotteryId)
+	if err != nil {
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.GET_PARTICIPATION_USERIDS_BYLOTTERYID_ERROR), "GetParticipationUserIdsByLotteryId,LotteryId:%v, error: %v", LotteryId, err)
+	}
+	return resp, nil
 }

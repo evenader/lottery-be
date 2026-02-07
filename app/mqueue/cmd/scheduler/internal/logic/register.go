@@ -2,7 +2,7 @@ package logic
 
 import (
 	"context"
-	"looklook/app/mqueue/cmd/scheduler/internal/svc"
+	"lottery-be/app/mqueue/cmd/scheduler/internal/svc"
 )
 
 type MqueueScheduler struct {

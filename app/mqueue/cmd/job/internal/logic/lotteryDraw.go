@@ -4,10 +4,10 @@ import (
 	"context"
 	"github.com/hibiken/asynq"
 	"github.com/pkg/errors"
-	"looklook/app/lottery/cmd/rpc/lottery"
-	"looklook/app/mqueue/cmd/job/internal/svc"
-	"looklook/common/constants"
-	"looklook/common/xerr"
+	"lottery-be/app/lottery/cmd/rpc/lottery"
+	"lottery-be/app/mqueue/cmd/job/internal/svc"
+	"lottery-be/common/constants"
+	"lottery-be/common/xerr"
 )
 
 var drawTypeList = []int64{constants.AnnounceTypeTimeLottery, constants.AnnounceTypePeopleLottery}

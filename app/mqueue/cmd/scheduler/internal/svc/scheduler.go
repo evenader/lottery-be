@@ -3,13 +3,12 @@ package svc
 import (
 	"fmt"
 	"github.com/hibiken/asynq"
-	"looklook/app/mqueue/cmd/scheduler/internal/config"
+	"lottery-be/app/mqueue/cmd/scheduler/internal/config"
 	"time"
 )
 
 // create scheduler
 func newScheduler(c config.Config) *asynq.Scheduler {
-
 	location, _ := time.LoadLocation("Asia/Shanghai")
 	return asynq.NewScheduler(
 		asynq.RedisClientOpt{

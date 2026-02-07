@@ -1,7 +1,7 @@
 package jobtype
 
 import (
-	"looklook/app/order/model"
+	"lottery-be/app/order/model"
 )
 
 // DeferCloseHomestayOrderPayload defer close homestay order

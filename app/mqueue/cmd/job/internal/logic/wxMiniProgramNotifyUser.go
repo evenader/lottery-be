@@ -8,12 +8,12 @@ import (
 	"github.com/hibiken/asynq"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
-	"looklook/app/mqueue/cmd/job/internal/svc"
-	"looklook/app/mqueue/cmd/job/jobtype"
-	"looklook/app/notice/cmd/rpc/pb"
-	"looklook/common/constants"
-	"looklook/common/wxnotice"
-	"looklook/common/xerr"
+	"lottery-be/app/mqueue/cmd/job/internal/svc"
+	"lottery-be/app/mqueue/cmd/job/jobtype"
+	"lottery-be/app/notice/cmd/rpc/pb"
+	"lottery-be/common/constants"
+	"lottery-be/common/wxnotice"
+	"lottery-be/common/xerr"
 )
 
 // 微信返回的错误码

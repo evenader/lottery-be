@@ -2,7 +2,7 @@ package svc
 
 import (
 	"github.com/hibiken/asynq"
-	"looklook/app/mqueue/cmd/scheduler/internal/config"
+	"lottery-be/app/mqueue/cmd/scheduler/internal/config"
 )
 
 type ServiceContext struct {

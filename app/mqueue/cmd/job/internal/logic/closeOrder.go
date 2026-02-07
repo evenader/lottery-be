@@ -3,8 +3,8 @@ package logic
 import (
 	"context"
 	"github.com/hibiken/asynq"
-	"looklook/app/mqueue/cmd/job/internal/svc"
-	"looklook/common/xerr"
+	"lottery-be/app/mqueue/cmd/job/internal/svc"
+	"lottery-be/common/xerr"
 )
 
 var ErrCloseOrderFal = xerr.NewErrMsg("close order fail")

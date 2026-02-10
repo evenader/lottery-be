@@ -20,6 +20,7 @@ type (
 		lotteryModel
 		UpdateClockTaskIdOnLottery(ctx context.Context, id int64, clockTaskId int64, opts ...Option) error
 		SearchTimeOutIds(ctx context.Context, currentTime time.Time, announceType int64) ([]int64, error)
+		UpdateStatusToAnnounced(ctx context.Context, id int64) (sql.Result, error)
 	}
 
 	customLotteryModel struct {
@@ -65,12 +66,26 @@ func (m *defaultLotteryModel) UpdateClockTaskIdOnLottery(ctx context.Context, id
 	return err
 }
 
-func (c *defaultLotteryModel) SearchTimeOutIds(ctx context.Context, currentTime time.Time, announceType int64) ([]int64, error) {
+func (m *defaultLotteryModel) SearchTimeOutIds(ctx context.Context, currentTime time.Time, announceType int64) ([]int64, error) {
 	var resp []int64
-	query := fmt.Sprintf("SELECT id FROM %s WHERE announce_type = 1 AND is_announced = 0 AND del_state = 0 AND announce_time <= ?", c.table)
-	err := c.QueryRowsNoCacheCtx(ctx, &resp, query, announceType, currentTime)
+	// 1. 只查 id，保持与 []int64 匹配
+	// 2. 将 announce_type 改为动态占位符
+	query := fmt.Sprintf("SELECT id FROM %s WHERE announce_type = ? AND is_announced = 0 AND del_state = 0 AND announce_time <= ?", m.table)
+
+	// 注意：参数顺序必须与 SQL 中的 ? 顺序严格一致
+	err := m.QueryRowsNoCacheCtx(ctx, &resp, query, announceType, currentTime)
 	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.GETLOTTERY_BYLESSTHAN_CURRENTTIME_ERROR), "GetLotterysByLessThanCurrentTime, CurrentTime:%v, anounceType:%v, error: %v", currentTime, announceType, err)
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.GETLOTTERY_BYLESSTHAN_CURRENTTIME_ERROR),
+			"SearchTimeOutIds fail, announceType:%v, currentTime:%v, error: %v", announceType, currentTime, err)
 	}
 	return resp, nil
+}
+
+func (m *defaultLotteryModel) UpdateStatusToAnnounced(ctx context.Context, id int64) (sql.Result, error) {
+	query := fmt.Sprintf("update %s set is_announced = 1 where id = ? and is_announced = 0", m.table)
+
+	// go-zero 的 model 接口直接提供了 ExecCtx 方法
+	return m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (sql.Result, error) {
+		return conn.ExecCtx(ctx, query, id)
+	})
 }

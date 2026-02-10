@@ -16,7 +16,7 @@ type (
 	// and implement the added methods in customPrizeModel.
 	PrizeModel interface {
 		prizeModel
-		FindByLotteryId(ctx context.Context, lotteryId int64) ([]*Prize, error)
+		FindByLotteryIdWithOrder(ctx context.Context, lotteryId int64) ([]*Prize, error)
 	}
 
 	customPrizeModel struct {
@@ -31,12 +31,12 @@ func NewPrizeModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) P
 	}
 }
 
-func (m *defaultPrizeModel) FindByLotteryId(ctx context.Context, lotteryId int64) ([]*Prize, error) {
+func (m *defaultPrizeModel) FindByLotteryIdWithOrder(ctx context.Context, lotteryId int64) ([]*Prize, error) {
 	var resp []*Prize
-	query := fmt.Sprintf("SELECT * FROM %s WHERE lottery_id = ?", m.table)
+	query := fmt.Sprintf("SELECT id, lottery_id, level, count,is_clocked FROM %s WHERE lottery_id = ? ORDER BY level ASC, id ASC", m.table)
 	err := m.QueryRowsNoCacheCtx(ctx, &resp, query, lotteryId)
 	if err != nil {
-		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_FIND_PRIZES_BYLOTTERYID_ERROR), "QueryRowsNoCacheCtx, &resp:%v, query:%v, lotteryId:%v, error: %v", &resp, query, lotteryId, err)
+		return nil, errors.Wrapf(xerr.NewErrCode(xerr.DB_FIND_PRIZES_BYLOTTERYID_ERROR), "QueryRowsNoCacheCtx,  query:%v, lotteryId:%v, error: %v", query, lotteryId, err)
 	}
 	return resp, nil
 }

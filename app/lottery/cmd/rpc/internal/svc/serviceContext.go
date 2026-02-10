@@ -40,7 +40,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 type LotteryStrategy interface {
 	// 策略本身不持有对象，策略是无状态的，每次调用都传入上下文对象
 	// 策略模式自身仅仅负责策略触发，至于获取开奖概率，生成获奖用户，持久化数据库属于通用业务流程交给logic处理，所以这部分能力由logic注入
-	Run(ctx context.Context, serviceContext *ServiceContext, drawSingleLottery func(lotteryId int64) ([]int64, error)) error
+	Run(ctx context.Context, serviceContext *ServiceContext, drawSingleLottery func(lotteryId int64) error) error
 }
 
 func (s *ServiceContext) RegisterStrategy(announceType int64, strategy LotteryStrategy) {
